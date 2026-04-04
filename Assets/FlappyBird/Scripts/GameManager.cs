@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     
     [Header("References")] 
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private PipeSpawner pipeSpawner;
 
     private const string BestScoreKey = "BestScore";
 
@@ -88,6 +89,7 @@ public class GameManager : MonoBehaviour
     private void ResetGame()
     {
         playerController.ResetPlayer();
+        pipeSpawner.ResetSpawner();
     }
 
     public void GamePlay()

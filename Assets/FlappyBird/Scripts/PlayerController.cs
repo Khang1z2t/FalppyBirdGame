@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
         );
     }
 
-    private void OnTap(InputAction.CallbackContext context)
+    public void OnTap(InputAction.CallbackContext context)
     {
         if (GameManager.Instance.GameState == GameState.StartScreen ||
             GameManager.Instance.GameState == GameState.GameOver) return;
