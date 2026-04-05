@@ -1,3 +1,5 @@
+using System.Collections;
+using FlappyBird.Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -55,17 +57,22 @@ public class PlayerController : MonoBehaviour
             GameManager.Instance.GamePlay();
             _rigidbody2D.simulated = true;
         }
+
         _rigidbody2D.linearVelocity = new Vector2(_rigidbody2D.linearVelocity.x, 0f);
         _rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+        AudioManager.Instance.PlayFly();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(GameManager.Instance.GameState == GameState.GameOver) return;
+        if (GameManager.Instance.GameState == GameState.GameOver) return;
         if (!collision.collider.CompareTag("Obstacle")) return;
+        AudioManager.Instance.PlayHit();
+        StartCoroutine(DieSoundDelay());
         GameManager.Instance.GameOver();
     }
-    
+
     public void ResetPlayer()
     {
         _rigidbody2D.simulated = false;
@@ -74,5 +81,11 @@ public class PlayerController : MonoBehaviour
         _startPosition = new Vector3(-.5f, 0f, 0f);
         transform.position = _startPosition;
         transform.rotation = Quaternion.identity;
+    }
+    
+    IEnumerator DieSoundDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        AudioManager.Instance.PlayDie();
     }
 }

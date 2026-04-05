@@ -1,3 +1,5 @@
+using System.Collections;
+using FlappyBird.Scripts;
 using TMPro;
 using UnityEngine;
 
@@ -24,13 +26,18 @@ public class GameManager : MonoBehaviour
     [Header("References")] 
     [SerializeField] private PlayerController playerController;
     [SerializeField] private PipeSpawner pipeSpawner;
-
+    
+    [Header("Camera Shake")]
+    [SerializeField] private float shackDuration = 0.5f;
+    [SerializeField] private float shakeAmount= 0.05f;
+    
     private const string BestScoreKey = "BestScore";
 
     private GameState _gameState = GameState.StartScreen;
 
     public GameState GameState => _gameState;
 
+    private Camera _mainCamera;
     private int _currentScore;
 
     public int CurrentScore
@@ -58,6 +65,7 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+        _mainCamera = Camera.main;
     }
 
     private void Start()
@@ -101,6 +109,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         _gameState = GameState.GameOver;
+        StartCoroutine(ShakeCamera());
         score.gameObject.SetActive(false);
         gameOverPanel.SetActive(true);
         startButton.SetActive(true);
@@ -118,5 +127,22 @@ public class GameManager : MonoBehaviour
         if (_gameState != GameState.Playing) return;
         
         CurrentScore++;
+        AudioManager.Instance.PlayScore();
+    }
+
+    IEnumerator ShakeCamera()
+    {
+        Vector3 originalPos = _mainCamera.transform.position;
+        float timer = 0;
+
+        while (timer < shackDuration)
+        {
+            timer += Time.deltaTime;
+            float x = Random.Range(-shakeAmount, shakeAmount);
+            float y = Random.Range(-shakeAmount, shakeAmount);
+            _mainCamera.transform.position = originalPos + new Vector3(x, y, 0);
+            yield return null;
+        }
+        _mainCamera.transform.position = originalPos;
     }
 }

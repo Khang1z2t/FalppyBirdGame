@@ -67,7 +67,7 @@ public class PipeSpawner : MonoBehaviour
         
         PipeController pipe = _pipePool.Dequeue();
         float randomY = Random.Range(-heightOffset, heightOffset);
-        pipe.transform.localPosition = transform.position + new Vector3(0, randomY, 0);
+        pipe.transform.position = transform.position + new Vector3(0, randomY, 0);
         
         pipe.gameObject.SetActive(true);
         
